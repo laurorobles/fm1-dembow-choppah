@@ -16,6 +16,7 @@ static volatile int p_mute;              /* the break silent (brk_mute), still r
 static float mute_amp = 1.0f;
 static volatile float p_tempo = 136.9f, p_pitch, p_swing = 0.5f;
 static volatile int p_playing;
+static volatile int p_continuous = 1;
 static volatile uint32_t p_pads;         /* bit PAD_*: held */
 static volatile uint32_t p_reset;        /* a count: changed = reset at the next render */
 static volatile int p_keep;              /* pitch keeps the length (granular), not the speed */
@@ -242,8 +243,9 @@ static void voice_start(const brk_break_t *b, int32_t s, int rev, float at, floa
     n = &v[cur];
     n->slice = s;
     n->lo = (float)b->slice[s];
-    /* playing, a slice runs on into the next until the next trigger; stopped (free play) it stops at its end */
-    n->hi = (float)(p_playing ? b->len : b->slice[s + 1]);
+    /* playing + continuous, a slice runs on into the next until the next trigger; otherwise it stops at its end */
+    int cont = p_playing && p_continuous;
+    n->hi = (float)(cont ? b->len : b->slice[s + 1]);
     n->dir = rev ? -1.0f : 1.0f;
     if (rev) {                           /* backwards: from the slice's end to its start */
         n->hi = (float)b->slice[s + 1];
@@ -254,7 +256,7 @@ static void voice_start(const brk_break_t *b, int32_t s, int rev, float at, floa
     n->amp_to = gain;
     n->amp_step = gain / FADE_IN;
     n->loop = 0;
-    n->wrap = (uint8_t)(p_playing && !rev);
+    n->wrap = (uint8_t)(cont && !rev);
     n->g_pos[0] = n->g_pos[1] = n->pos;  /* the grains start on the hit (the second at full: the attack whole) */
     n->g_age = 0.0f;
     n->gate_left = -1.0f;
@@ -343,7 +345,7 @@ static void key_begin(const brk_break_t *b, int32_t s)
     key_pitch = (float)key_set.pitch;
 }
 
-/* the key let go (or tapped): playing, the sound runs on into the loop; stopped, it ends with its window */
+/* the key let go (or tapped): playing + continuous, the sound runs on into the loop; otherwise it ends with its window */
 static void key_let_go(const brk_break_t *b)
 {
     voice_t *c = &v[cur];
@@ -352,8 +354,9 @@ static void key_let_go(const brk_break_t *b)
         return;
     c->loop = 0u;
     if (c->dir > 0.0f) {
-        c->hi = p_playing ? (float)b->len : (key_lo + key_w > (float)b->len ? (float)b->len : key_lo + key_w);
-        c->wrap = (uint8_t)(p_playing != 0);
+        int cont = p_playing && p_continuous;
+        c->hi = cont ? (float)b->len : (key_lo + key_w > (float)b->len ? (float)b->len : key_lo + key_w);
+        c->wrap = (uint8_t)(cont != 0);
     }
 }
 
@@ -903,6 +906,7 @@ BRK_COLD void brk_init(void)
     pending_wait = -1.0f;
     bar = held_mask = pads_now = p_pads = 0u;
     p_playing = 0;
+    p_continuous = 1;
     to_next = 0.0f;
     tape = gate_amp = 1.0f;
     roll_slice = -1;
@@ -1024,6 +1028,7 @@ BRK_COLD void brk_play(int on)
         p_reset++;                       /* play starts at the pattern's first step */
     p_playing = on ? 1 : 0;
 }
+BRK_COLD void brk_continuous(int on) { p_continuous = on ? 1 : 0; }
 BRK_COLD void brk_reset(void) { p_reset++; }
 BRK_COLD void brk_tempo(float bpm) { p_tempo = brk_clampf(bpm, 40.0f, 300.0f); }
 float brk_get_tempo(void) { return p_tempo; }

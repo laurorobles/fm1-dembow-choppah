@@ -75,7 +75,8 @@ typedef struct {
     uint8_t midi_ch;                     /* the channel notes, CC and program changes come in on (and go out on):
                                           * 0 any (out: 1), 1..16 that one */
     uint8_t midi_out;                    /* MO_*: what goes out besides the clock */
-    uint8_t rsv4[2];
+    uint8_t cont_off;                    /* 0: continuous play ON (default), 1: OFF (stop at slice/window end) */
+    uint8_t rsv4;
 } settings_t;
 #define SET_SIZE_MIN offsetof(settings_t, rsv2)   /* the shortest save that loads: CHP7's first size */
 _Static_assert(sizeof(settings_t) <= 3840u, "a store object holds 3840 bytes");
@@ -165,6 +166,7 @@ static void settings_apply(void)
     brk_pitch_mode(pitch_keeps(), (float)(set.grain_ms ? set.grain_ms : 30u));
     brk_gate((float)(set.gate ? set.gate : 100u) * 0.01f);
     brk_snap(SNAP_SL[snap_index()]);
+    brk_continuous(!set.cont_off);
     kick_set(&set.kick);
     perc_set(&set.perc);
     {

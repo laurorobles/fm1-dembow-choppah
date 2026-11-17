@@ -269,15 +269,16 @@ def prepare(spec, args, shown=None):
         peak = max(1e-9, max(abs(v) for v in x))
         gain_db, lim_db = 20.0 * math.log10(0.98 / peak), 0.0
         x = [v * (0.98 / peak) for v in x]
-    x = resample(x, rate, args.rate)
+    dst_rate = args.rate if args.rate > 0 else min(rate, 22050)
+    x = resample(x, rate, dst_rate)
     if len(x) > BANK_MAX_LEN:
         raise SystemExit(f"{shown or path}: {bars} bar(s) at {bpm:.2f} BPM are {len(x)} samples, the firmware's buffer "
                          f"holds {BANK_MAX_LEN} (fewer bars)")
     nslices = min(BANK_SLICES, args.break_slices or args.slices * bars)
-    pts = slice_points(x, args.rate, nslices, args.transients, 16 * bars)
+    pts = slice_points(x, dst_rate, nslices, args.transients, 16 * bars)
     data = adpcm_encode(x)
     name = (given or (args.name_prefix + path.stem)).upper()[:11]
-    return {"name": name, "file": shown or str(path), "bpm": round(bpm, 2), "bars": bars, "rate": args.rate,
+    return {"name": name, "file": shown or str(path), "bpm": round(bpm, 2), "bars": bars, "rate": dst_rate,
             "len": len(x), "nslices": nslices, "slices": pts, "data": data, "pcm": x,
             "gain_db": round(gain_db, 1), "limit_db": round(lim_db, 1)}
 

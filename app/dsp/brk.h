@@ -136,6 +136,7 @@ void brk_swap_break(const brk_break_t *b);   /* b takes over at the next step (s
 const brk_break_t *brk_get_break(void);
 
 void brk_play(int on);
+void brk_continuous(int on);             /* 1 (default): slices run on into loop; 0: stop at slice/window end */
 void brk_reset(void);                    /* to the pattern's first step (the next step played is step 0) */
 void brk_tempo(float bpm);               /* 40..300 */
 float brk_get_tempo(void);

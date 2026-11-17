@@ -8,3 +8,5 @@ __pycache__/
 app/web/*
 !app/web/words/
 app/bank_data.h
+dembow_raw/
+site/

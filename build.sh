@@ -22,7 +22,7 @@ bank() {   # the breaks marked * in breaks/breaks.txt -> app/bank_data.h (built 
     if [ "$1" = force ] || [ ! -f app/bank_data.h ] ||
        [ -n "$(find breaks tools/prep_breaks.py -newer app/bank_data.h \( -name '*.wav' -o -name breaks.txt -o -name prep_breaks.py \) | head -1)" ]; then
         echo "build.sh: the break bank, from breaks/breaks.txt"
-        "$PY" tools/prep_breaks.py --list breaks/breaks.txt --break-slices 16 --transients \
+        "$PY" tools/prep_breaks.py --list breaks/breaks.txt --break-slices 16 --transients --rate 0 \
             --header app/bank_data.h -o app/build/bank.bin
     fi
 }
