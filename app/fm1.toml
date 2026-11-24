@@ -2,7 +2,7 @@
 name = "CHOPPAH"               # the build's files: choppah.fwsc, choppah-X.Y.fwsc
 id_prefix = "FM-1_86"          # package identity: dev FM-1_8600, releases FM-1_86XXYYZZ (PRD Q5: check it is free)
 usb_manufacturer = "CHOPPAH"
-usb_product = "CHOPPAH FM-1"
+usb_product = "CHOPPAH DEMBOW FM-1"
 ble = true                     # Bluetooth MIDI (PRD A-71): on and off on the GLOBAL page
 ble_stack = "own"              # fm1-base's own stack: nothing of JieLi's, ~40 KB
 bt_audio = true                # Bluetooth audio out (A2DP source to headphones and speakers, PRD A-72): GLOBAL
@@ -15,7 +15,7 @@ unity_opt = "z"                # the platform and the UI at -Oz (the engine stay
 boot_pack = true               # the start-up's RAM images stored LZMA-packed: smaller
 # the site (tools/make_site.py)
 install_app = "site/install_app.js"   # confetti when the install is done
-tagline = "An Amen chopper for the FM-1"
+tagline = "Dembow chopper for the FM-1 · Based on CHOPPAH"
 repo = "https://github.com/laurorobles/fm1-dembow-choppah"
 licence = "MPL-2.0"
 credits = "Built on fm1-base and felucca-bsp, from Felucca by Leo Kuroshita (Hügelton Instruments)."

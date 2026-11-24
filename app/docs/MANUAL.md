@@ -1,6 +1,12 @@
-# CHOPPAH
+# CHOPPAH DEMBOW
 
-CHOPPAH is an Amen chopper for the M-VAVE FM-1. A break is cut into sixteen slices, one on each white key, and
+> **Basado en el CHOPPAH original** ([profikid/fm1-break-choppah](https://github.com/profikid/fm1-break-choppah) de Laurens Profittlich) · **Based on original CHOPPAH**
+>
+> **Diferencias de esta versión / Differences in this version:**
+> - **Banco de Dembow personalizado (7 loops):** `DB 104 A`, `DB 104 B`, `DB OCHOSI`, `DB TIBURON`, `DB TINYTUNE`, `DB MJ 21`, `DB MJ 97` (procesados con `tools/dembow_convert.py` a `-16 dBFS` y ajustados para `90–105 BPM`).
+> - **Continuous Play opcional (`CONT PLAY`):** en **LFO → GROOVE → K3**, alterna entre **ON** (original: el loop sigue corriendo) y **OFF** (cada *slice* se detiene al terminar su corte).
+
+CHOPPAH DEMBOW is a Dembow & breakbeat chopper for the M-VAVE FM-1. A break is cut into sixteen slices, one on each white key, and
 plays in time while you rearrange it, roll it, reverse it, stop it like a tape and push it through effects.
 
 ![CHOPPAH's slicer view while playing](img/screen-slicer.png "The slicer view")
