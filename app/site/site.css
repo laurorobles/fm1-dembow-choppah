@@ -3,10 +3,10 @@
    body: IBM Plex Sans; labels, code and numbers: IBM Plex Mono. The manual reads in a column with its contents
    beside it on wide screens. */
 :root {
-  --bg: #0e0d0b; --panel: #171510; --raise: #201d16; --line: #2f2a20;
-  --fg: #ede6d4; --dim: #a39a85; --faint: #6b6353;
-  --amber: #ffb21a; --amber-soft: rgba(255, 178, 26, .13); --hot: #fff3d3;
-  --pad: #9fb0d0;
+  --bg: #0b090e; --panel: #15111a; --raise: #201928; --line: #322640;
+  --fg: #f4eef8; --dim: #a899b8; --faint: #6f5f80;
+  --amber: #ff2e93; --amber-soft: rgba(255, 46, 147, .15); --hot: #ffe2f1;
+  --pad: #00e5ff;
   --f-display: "Chakra Petch", "Arial Narrow", system-ui, sans-serif;
   --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;

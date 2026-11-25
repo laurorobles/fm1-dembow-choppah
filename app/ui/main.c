@@ -80,6 +80,9 @@ static void knob_turn(int k, int32_t d)
                 set.cont_off = d < 0 ? 1u : 0u;      /* right: ON (continuous), left: OFF (slice) */
                 brk_continuous(!set.cont_off);
                 app_say("CONT PLAY", set.cont_off ? "OFF" : "ON");
+            } else if (k == EN_K4) {
+                set.duck = d > 0 ? 1u : 0u;          /* right: ON (sidechain), left: OFF */
+                app_say("DUCK", set.duck ? "ON" : "OFF");
             } else
                 return;
         } else if (k == EN_K1) {
@@ -815,7 +818,7 @@ static const char *foot_knob(uint32_t i, char *t)
                                               {"TEMPO", "FINE", "HALF / X2", "CLICK"},
                                               {"P1", "P2", "P3", "MIX"}};
     static const char *const KN_PITCH[4] = {"PITCH", "GRAIN", "SNAP", "RESET ALL"};
-    static const char *const KN_GROOVE[4] = {"SWING", "DRUMS", "CONT PLAY", ""};
+    static const char *const KN_GROOVE[4] = {"SWING", "DRUMS", "CONT PLAY", "DUCK"};
     static const char *const KN_BTA[4] = {"BT AUDIO", "DEVICE", "SCAN", "CONNECT"};
     static const char *const KN_CHAN[4] = {"CHANNEL", "NOTES OUT", "CC OUT", "PC OUT"};
     static const char *const KN_LANE[4] = {"FILL", "ROTATE", "CLR / 4X4", "COPY"};

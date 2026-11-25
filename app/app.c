@@ -76,7 +76,7 @@ typedef struct {
                                           * 0 any (out: 1), 1..16 that one */
     uint8_t midi_out;                    /* MO_*: what goes out besides the clock */
     uint8_t cont_off;                    /* 0: continuous play ON (default), 1: OFF (stop at slice/window end) */
-    uint8_t rsv4;
+    uint8_t duck;                        /* 0: sidechain duck OFF, 1: ON (kick ducks the break) */
 } settings_t;
 #define SET_SIZE_MIN offsetof(settings_t, rsv2)   /* the shortest save that loads: CHP7's first size */
 _Static_assert(sizeof(settings_t) <= 3840u, "a store object holds 3840 bytes");
@@ -730,6 +730,15 @@ void app_render(int32_t *lr, uint32_t n, uint32_t master_q12)
             perc_render(perc, m, pa, who, np);
             meter_kick = meter(kick, m, meter_kick);
             meter_perc = meter(perc, m, meter_perc);
+            if (set.duck) {              /* sidechain: internal kick ducks the break for modern reggaeton pump */
+                static float duck_env = 1.0f;
+                for (i = 0; i < m; i++) {
+                    float ak = kick[i] < 0.0f ? -kick[i] : kick[i];
+                    float tgt = 1.0f - brk_clampf(ak * 2.2f, 0.0f, 0.75f);
+                    duck_env += (tgt - duck_env) * (tgt < duck_env ? 0.08f : 0.0012f);
+                    mono[i] *= duck_env;
+                }
+            }
             for (i = 0; i < m; i++)
                 kick[i] += perc[i];
         }

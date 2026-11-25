@@ -14,6 +14,8 @@ static void mix_value(uint32_t h, int i, char *t)
             text_cat(t, set.drums_chain ? "THRU FX" : "AROUND FX");
         else if (i == 2)
             text_cat(t, set.cont_off ? "OFF" : "ON");
+        else if (i == 3)
+            text_cat(t, set.duck ? "ON" : "OFF");
         return;
     }
     if (i == 0) {
@@ -50,7 +52,7 @@ static void mix_fader(int32_t x, float v, int on)   /* 0..1 from the bottom */
 }
 static void mix_picture(int32_t top)
 {
-    static const char *const NAME[2][4] = {{"BREAK", "KICK", "PERC", "FX"}, {"SWING", "DRUMS", "CONT PLAY", ""}};
+    static const char *const NAME[2][4] = {{"BREAK", "KICK", "PERC", "FX"}, {"SWING", "DRUMS", "CONT PLAY", "DUCK"}};
     uint32_t c;
     cv_oy = -top;                        /* (this strip's rows of the picture) */
     for (c = 0; c < 4u; c++) {
@@ -76,7 +78,13 @@ static void mix_picture(int32_t top)
             cv_rect(126, 62, 48, 26, cont ? C_BLOCK : C_BLOCK_HI);
             cv_text(136, 67, &FONT_XS, "OFF", cont ? C_GRAY : C_BLACK);
         }
-        cv_text(184, 40, &FONT_XS, "LFO: LVLS", C_DIM);
+        {                                /* sidechain duck: ON or OFF */
+            int dk = set.duck;
+            cv_rect(186, 26, 48, 26, dk ? C_BLOCK_HI : C_BLOCK);
+            cv_text(198, 31, &FONT_XS, "ON", dk ? C_BLACK : C_GRAY);
+            cv_rect(186, 62, 48, 26, dk ? C_BLOCK : C_BLOCK_HI);
+            cv_text(196, 67, &FONT_XS, "OFF", dk ? C_GRAY : C_BLACK);
+        }
         return;
     }
     mix_fader(10, (float)set.brk_level * 0.01f, set.brk_level > 0u);
