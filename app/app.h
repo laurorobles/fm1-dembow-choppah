@@ -6,8 +6,8 @@
 #include "brk.h"
 #include "brk_fx.h"
 
-#define APP_NAME "CHOPPAH"
-#define APP_TAGLINE "DEMBOW CHOPPER"
+#define APP_NAME "DEMBOW CHOPPAH"
+#define APP_TAGLINE "REGGAETON & DEMBOW"
 #define APP_SPLASH_RGB RGB(255, 46, 147)
 #define APP_SYS_TEXT                     /* the platform's own screens (crash, safe mode, update, calibration) write in
                                           * CHOPPAH's faces (app_sys_* in app.c): fm1-base's own 15- and 31-pixel ones
