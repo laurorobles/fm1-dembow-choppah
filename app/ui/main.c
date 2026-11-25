@@ -238,6 +238,8 @@ static void input(void)
         for (i = 0; i < 11u; i++)
             if (kup >> BK[i] & 1u)
                 brk_pad((int)i, 0);
+            if (i == PAD_DUB)
+                siren_on = 0u;
         for (k = 0; k < NE; k++)
             if (plat_enc(k))
                 ui.touched = 1u;
@@ -281,11 +283,15 @@ static void input(void)
     for (i = 0; i < 11u; i++) {          /* black keys: the pads, held; the last one pressed has the screen (ARP: its own) */
         if (kdn >> BK[i] & 1u && ui.page != PG_ARP) {
             brk_pad((int)i, 1);
+            if (i == PAD_DUB && shift)
+                siren_on = 1u;
             ui.pad_focus = (int8_t)i;
             ui.pad_since = now;
         }
         if (kup >> BK[i] & 1u)
             brk_pad((int)i, 0);
+            if (i == PAD_DUB)
+                siren_on = 0u;
     }
     if (ui.pad_focus >= 0 && !(keys >> BK[ui.pad_focus] & 1u)) {   /* let go: another pad still held, or none */
         ui.pad_focus = -1;

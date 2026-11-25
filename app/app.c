@@ -670,6 +670,7 @@ static float meter(const float *x, uint32_t n, float last)
     return pk > last ? pk : last;
 }
 
+static volatile uint8_t siren_on;        /* 1: Dub Siren / Alarm held */
 void app_render(int32_t *lr, uint32_t n, uint32_t master_q12)
 {
     static float mono[APP_BLOCK], l[APP_BLOCK], r[APP_BLOCK], echo[APP_BLOCK], verb[APP_BLOCK];
@@ -744,6 +745,22 @@ void app_render(int32_t *lr, uint32_t n, uint32_t master_q12)
         }
         brk_status(&st);
         /* the break through the DJ filter, the drums joining it into the chain (or around it) */
+        if (siren_on) {                  /* Dub Siren / Alarm: LFO-swept oscillator into delay/reverb */
+            static float s_ph = 0.0f, s_lfo = 0.0f, s_env = 0.0f;
+            for (i = 0; i < m; i++) {
+                float freq, sig;
+                s_env += (1.0f - s_env) * 0.015f;
+                s_lfo += 6.5f / (float)BRK_SR;
+                if (s_lfo >= 1.0f) s_lfo -= 1.0f;
+                freq = 780.0f + 420.0f * brk_sin_turns(s_lfo);
+                s_ph += freq / (float)BRK_SR;
+                if (s_ph >= 1.0f) s_ph -= 1.0f;
+                sig = 0.35f * s_env * brk_sin_turns(s_ph);
+                echo[i] += sig * 0.8f;
+                verb[i] += sig * 0.5f;
+                mono[i] += sig * 0.5f;
+            }
+        }
         brk_fx_process(mono, set.drums_chain ? kick : 0, echo, verb, set.drums_chain ? 0 : kick, l, r, m, st.pads);
         if (nclick || click_env > 1e-3f) {   /* the metronome's click: dry, over everything, both sides */
             uint32_t j = 0u;
